@@ -35,7 +35,7 @@ def get_paper_urls(year: int) -> List[str]:
         'q': '假期',
         'pcodeJiguan': '国办发明电',
         'puborg': '国务院办公厅'
-    }).text
+    }, timeout=60).text
     ret = re.findall(
         r'<li class="res-list".*?<a href="(.+?)".*?</li>', body, flags=re.S)
     ret = [i for i in ret if i not in PAPER_EXCLUDE]
@@ -56,7 +56,7 @@ def get_paper(url: str) -> str:
     assert re.match(r'http://www.gov.cn/zhengce/content/\d{4}-\d{2}/\d{2}/content_\d+.htm',
                     url), 'Site changed, need human verify'
 
-    response = requests.get(url)
+    response = requests.get(url, timeout=60)
     response.encoding = 'utf-8'
     soup = bs4.BeautifulSoup(response.text, features='html.parser')
     container = soup.find('td', class_='b12c')
