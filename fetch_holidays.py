@@ -9,7 +9,7 @@ from itertools import chain
 from typing import Iterator, List, Optional, Tuple
 
 import bs4
-import requests
+from security import safe_requests
 
 SEARCH_URL = 'http://sousuo.gov.cn/s.htm'
 PAPER_EXCLUDE = [
@@ -28,7 +28,7 @@ def get_paper_urls(year: int) -> List[str]:
         List[str]: Urls， newlest first.
     """
 
-    body = requests.get(SEARCH_URL, params={
+    body = safe_requests.get(SEARCH_URL, params={
         't': 'paper',
         'advance': 'true',
         'title': year,
@@ -56,7 +56,7 @@ def get_paper(url: str) -> str:
     assert re.match(r'http://www.gov.cn/zhengce/content/\d{4}-\d{2}/\d{2}/content_\d+.htm',
                     url), 'Site changed, need human verify'
 
-    response = requests.get(url)
+    response = safe_requests.get(url)
     response.encoding = 'utf-8'
     soup = bs4.BeautifulSoup(response.text, features='html.parser')
     container = soup.find('td', class_='b12c')
